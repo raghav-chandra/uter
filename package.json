@@ -1,0 +1,41 @@
+{
+  "name": "uter",
+  "version": "1.0.0",
+  "description": "Usecase Executor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raghav-chandra/uter.git"
+  },
+  "keywords": [
+    "usecase",
+    "usecase_store",
+    "usecase_executor",
+    "functional",
+    "functional_testing"
+  ],
+  "author": "Raghav Chandra",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/raghav-chandra/uter/issues"
+  },
+  "homepage": "https://github.com/raghav-chandra/uter#readme",
+  "dependencies": {
+    "html-webpack-plugin": "^2.30.1",
+    "httpserver": "^0.3.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "httpserver": "^0.3.0",
+    "path": "^0.12.7",
+    "webpack": "^3.6.0"
+  }
+}
