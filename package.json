@@ -4,7 +4,8 @@
   "description": "Usecase Executor",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack"
   },
   "repository": {
     "type": "git",
@@ -24,10 +25,12 @@
   },
   "homepage": "https://github.com/raghav-chandra/uter#readme",
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "html-webpack-plugin": "^2.30.1",
     "httpserver": "^0.3.0",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-transition-group": "^2.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -36,6 +39,10 @@
     "babel-preset-react": "^6.24.1",
     "httpserver": "^0.3.0",
     "path": "^0.12.7",
+    "react-redux": "^5.0.6",
+    "reactstrap": "^4.8.0",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "webpack": "^3.6.0"
   }
 }
