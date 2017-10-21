@@ -1,30 +1,18 @@
 import React from 'react';
-import { Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
+import {CardHeader,CardFooter, Card,CardBody, Button, CardTitle, CardText, Row, Col,CardSubtitle } from 'reactstrap';
 
-class UseCaseCard extends React.Component{
+export class UseCaseCard extends React.Component{
 	constructor(props){
 		super(props);
 	}
 
 	render() {
-		  return (
-    <Row>
-      <Col sm="6">
-        <Card body>
-          <CardTitle>Special Title Treatment</CardTitle>
-          <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-          <Button>Go somewhere</Button>
-        </Card>
-      </Col>
-      <Col sm="6">
-        <Card body>
-          <CardTitle>Special Title Treatment</CardTitle>
-          <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-          <Button>Go somewhere</Button>
-        </Card>
-      </Col>
-    </Row>
-  );
+		  return (<div>
+			<Card body="true" inverse style={{ backgroundColor: '#333', borderColor: '#333',height:'180px',width:'300px' }} >
+			        <CardTitle>Special Title Treatment <Button color="primary" className="pull-right" >Execute</Button></CardTitle>
+			        <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+		        </Card>
+		</div>);
 	}
 }
 
@@ -35,9 +23,7 @@ export class UseCaseCardList extends React.Component{
 	
 	render() {
 		let data=[];
-		for(let i=1;i<10;i++){
-			data.push(<div><UseCaseCard /></div>);
-		}
+			data.push(<UseCaseCard />);
 		return (<div>{data}</div>);
 	}
 }
