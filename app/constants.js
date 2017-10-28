@@ -1,4 +1,5 @@
 
 export const USER_ACTION = {
-	SAVE_UC:'SAVE_UC'
+	SAVE_UC:'SAVE_UC',
+	RETRIEVE_UC:'RETRIEVE_UC'
 }

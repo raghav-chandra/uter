@@ -52,5 +52,5 @@ ReactDOM.render(<NavBar />,document.getElementById('navbar'));
 
 ReactDOM.render(<AppA name="Raghav Chandra"/>,document.getElementById('uter-content'));
 
-ReactDOM.render(<UseCase/>,document.getElementById('uter-content'));
+//ReactDOM.render(<UseCase/>,document.getElementById('uter-content'));
 
