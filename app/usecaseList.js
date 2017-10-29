@@ -11,7 +11,13 @@ export class UseCaseCard extends React.Component{
 	render() {
 		  return (<div class='pull-left' style={{marginRight:'10px'}}>
 			<Card body="true" inverse style={{ backgroundColor: '#333', borderColor: '#333',height:'180px',width:'300px' }} >
-			        <CardTitle>{this.props.title}<Button color="primary" className="pull-right" >Execute</Button></CardTitle>
+			        <CardTitle>{this.props.title}
+					<div className='pull-right'>
+					<Button color="danger"><i class="fa fa-trash-o fa-1"></i></Button>
+					<Button color="default"><i class="fa fa-pencil fa-fw fa-1"></i></Button>
+					<Button color="success"><i class="fa fa-play fa-1"></i></Button>
+					</div>
+				</CardTitle>
 			        <CardText>{this.props.summary}</CardText>
 		        </Card>
 		</div>);
