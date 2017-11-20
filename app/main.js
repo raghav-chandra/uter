@@ -21,8 +21,17 @@ export default class AppA extends Component {
 }
 
 class NavBar extends React.Component {
+	constructor(props){
+		super(props);
+		this.state ={activeTab:1};
+		this.handleSelect=this.handleSelect.bind(this);
+	}
+	handleSelect(key) {
+		this.setState({activeTab:key});
+	}
+
 	render() {
-		return (<div><Navbar inverse collapseOnSelect>
+		return (<div style={{width:"100%"}}><Navbar inverse collapseOnSelect>
 		<Navbar.Header>
 		  <Navbar.Brand>
 			<a href="#">UTER</a>
@@ -30,27 +39,30 @@ class NavBar extends React.Component {
 		  <Navbar.Toggle />
 		</Navbar.Header>
 		<Navbar.Collapse>
-		  <Nav>
-			<NavItem eventKey={1} href="#">Link</NavItem>
-			<NavItem eventKey={2} href="#">Link</NavItem>
-			<NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-			  <MenuItem eventKey={3.1}>Action</MenuItem>
-			  <MenuItem eventKey={3.2}>Another action</MenuItem>
-			  <MenuItem eventKey={3.3}>Something else here</MenuItem>
-			  <MenuItem divider />
-			  <MenuItem eventKey={3.3}>Separated link</MenuItem>
-			</NavDropdown>
+		  <Nav bsStyle="pills" activeKey={this.state.activeTab} onSelect={this.handleSelect}>
+			<NavItem eventKey={1} href="#">Executables</NavItem>
+			<NavItem eventKey={2} href="#">Executions</NavItem>
+			<NavDropdown eventKey="3" title="Add" id="nav-dropdown">
+          			<MenuItem eventKey="3.1">Execution</MenuItem>
+          			<MenuItem eventKey="3.2">Execution Suite</MenuItem>
+          			<MenuItem divider />
+          			<MenuItem eventKey="4.4">Separated link</MenuItem>
+        		</NavDropdown>
 		  </Nav>
 		  <Nav pullRight>
 			<NavItem eventKey={1} href="#">Link Right</NavItem>
 		  </Nav>
 		</Navbar.Collapse>
-	  </Navbar></div>);
+	  </Navbar>
+
+	 <UseCaseCardList />
+
+		</div>);
 	}
 }
 ReactDOM.render(<NavBar />,document.getElementById('navbar'));
 
-ReactDOM.render(<AppA name="Raghav Chandra"/>,document.getElementById('uter-content'));
+//ReactDOM.render(<AppA name="Raghav Chandra"/>,document.getElementById('uter-content'));
 
 //ReactDOM.render(<UseCase/>,document.getElementById('uter-content'));
 
