@@ -5,7 +5,7 @@ import {USER_ACTION} from './constants'
 import {execute} from './network'
 
 
-export class UseCase extends React.Component{
+export class UseCaseForm extends React.Component{
         constructor(props){
                 super(props);
                 this.state={ucExecutionEndPoint:'',ucResultEndPoint:'',ucSummary:'',ucDescription:'',ucInputJson:''}

@@ -2,7 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Component } from 'react';
 import { UseCaseCardList } from  './usecaseList';
-import { UseCase } from './usecaseForm';
+import { UseCaseForm } from './usecaseForm';
+import {UseCaseSuiteForm} from './usecaseSuite';
+import { UseCaseExecutions } from './usecaseExecutions';
 
 import {Navbar,Nav,NavItem,NavDropdown,MenuItem} from 'react-bootstrap';
 
@@ -31,6 +33,15 @@ class NavBar extends React.Component {
 	}
 
 	render() {
+		let component=<UseCaseCardList />;
+		if(this.state.activeTab == "3.1"){
+			component=<UseCaseForm />;
+		} else if(this.state.activeTab == "3.2") {
+			component=<UseCaseSuiteForm />
+		} else if(this.state.activeTab ==2 ){
+			component=<UseCaseExecutions />
+		}
+
 		return (<div style={{width:"100%"}}><Navbar inverse collapseOnSelect>
 		<Navbar.Header>
 		  <Navbar.Brand>
@@ -55,8 +66,7 @@ class NavBar extends React.Component {
 		</Navbar.Collapse>
 	  </Navbar>
 
-	 <UseCaseCardList />
-
+		{component}
 		</div>);
 	}
 }
