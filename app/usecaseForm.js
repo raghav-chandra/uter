@@ -6,17 +6,16 @@ import {execute} from './network'
 
 
 export class UseCaseForm extends React.Component{
-        constructor(props){
-                super(props);
-                this.state={ucExecutionEndPoint:'',ucResultEndPoint:'',ucSummary:'',ucDescription:'',ucInputJson:''}
-                this.summaryValidation=this.summaryValidation.bind(this);
+	constructor(props){
+		super(props);
+		this.state={ucExecutionEndPoint:'',ucResultEndPoint:'',ucSummary:'',ucDescription:'',ucInputJson:''}
+		this.summaryValidation=this.summaryValidation.bind(this);
 		this.descriptionValidation=this.descriptionValidation.bind(this);
 		this.endPointValidation=this.endPointValidation.bind(this);
 		this.inputJsonValidation=this.inputJsonValidation.bind(this);
-                this.handleChange=this.handleChange.bind(this);
+		this.handleChange=this.handleChange.bind(this);
 		this.handleSave=this.handleSave.bind(this);
-	
-        }
+	}
 
 	summaryValidation() {
 		const length = this.state.ucSummary.length;
@@ -25,15 +24,14 @@ export class UseCaseForm extends React.Component{
 		else if (length > 0) return 'error';
 	}
 
-        descriptionValidation() {
-                const length = this.state.ucDescription.length;
-                if (length > 10) return 'success';
-                else if (length > 5) return 'warning';
-                else if (length > 0) return 'error';
-        }
+	descriptionValidation() {
+		const length = this.state.ucDescription.length;
+		if (length > 10) return 'success';
+		else if (length > 5) return 'warning';
+		else if (length > 0) return 'error';
+	}
 
 	endPointValidation(endPointType) {
-		
 		let endPoint = this.state[endPointType];
 		let len = endPoint.length;
 		if (len > 10 && endPoint.startsWith('http')) {
@@ -54,7 +52,7 @@ export class UseCaseForm extends React.Component{
 
 	handleChange(e) {
 		let currState=this.state;
-                currState[e.target.id] = e.target.value;
+		currState[e.target.id] = e.target.value;
 		this.setState(currState);
 	}
 	handleSave(e) {
