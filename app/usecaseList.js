@@ -11,8 +11,8 @@ const styles = {
 	},
 	topButtons:{
 		position:'absolute',
-                top:0,
-                right:0
+		top:0,
+		right:0
 	}
 };
 export class UseCaseCard extends React.Component{
@@ -23,14 +23,14 @@ export class UseCaseCard extends React.Component{
 	render() {
 		  return (<div className='pull-left' style={{marginRight:'10px'}}>
 			<Card body="true" inverse style={{ backgroundColor: '#333', borderColor: '#333',height:'180px',width:'300px' }} >
-			        <CardTitle>{this.props.title}<Button color="primary" style={styles.topButtons} size='sm'><i className="fa fa-play fa-2"></i></Button>
+			    <CardTitle>{this.props.title}<Button color="primary" style={styles.topButtons} size='sm'><i className="fa fa-play fa-2"></i></Button>
 				</CardTitle>
-			       	<CardText>{this.props.summary}</CardText>
+			    <CardText>{this.props.summary}</CardText>
 				<ButtonGroup size='sm'  style={styles.bottomButtons}>
-                                <Button color="danger" ><i className="fa fa-trash-o fa-2"></i></Button>
-                                <Button color="default" ><i className="fa fa-pencil fa-fw fa-2"></i></Button>
+                	<Button color="danger" ><i className="fa fa-trash-o fa-2"></i></Button>
+                	<Button color="default" ><i className="fa fa-pencil fa-fw fa-2"></i></Button>
 				</ButtonGroup>
-		        </Card>
+			</Card>
 		</div>);
 	}
 }

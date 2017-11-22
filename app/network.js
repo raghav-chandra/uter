@@ -14,7 +14,7 @@ function saveUseCase(param) {
 }
 
 function retrieveUseCase(param) {
-        let uc1=JSON.parse(retrieve('charag'));
+	let uc1=JSON.parse(retrieve('charag'));
 	uc1.id='charag';
 	let uc2=JSON.parse(retrieve('raghav'));
 	uc2.id='raghav';
