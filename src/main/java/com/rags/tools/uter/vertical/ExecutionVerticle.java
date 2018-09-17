@@ -7,7 +7,7 @@ import io.vertx.core.json.JsonObject;
 /**
  * Created by ragha on 26-07-2018.
  */
-public class ExecutonVerticle extends AbstractDBVerticle {
+public class ExecutionVerticle extends AbstractDBVerticle {
 
     @Override
     public void start() throws Exception {
