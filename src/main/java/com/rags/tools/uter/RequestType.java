@@ -9,5 +9,7 @@ public enum RequestType {
     FETCH_UC,
     FETCH_UCS,
     GET_UCS,
-    EXECUTE_UC
+    EXECUTE_UC,
+
+    MATCH_RESULTS
 }
