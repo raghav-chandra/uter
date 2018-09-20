@@ -11,5 +11,7 @@ public enum RequestType {
     GET_UCS,
     EXECUTE_UC,
 
-    MATCH_RESULTS
+    MATCH_RESULTS,
+
+    GET_ALL_UC
 }
