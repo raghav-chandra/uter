@@ -31,7 +31,8 @@ public class MatcherVerticle extends AbstractVerticle {
         });
     }
 
-    private FinalStatus match(JsonObject expected, JsonObject actual, JsonObject attributesToMark, String key) {
+
+    protected FinalStatus match(JsonObject expected, JsonObject actual, JsonObject attributesToMark, String key) {
         AtomicReference<FinalStatus> status = new AtomicReference<>(FinalStatus.PASS);
         if (expected == null && actual == null && key == null) {
             return FinalStatus.FAIL;
@@ -83,7 +84,7 @@ public class MatcherVerticle extends AbstractVerticle {
         return status.get();
     }
 
-    private FinalStatus match(JsonArray expected, JsonArray actual, JsonObject bestMatch) {
+    protected FinalStatus match(JsonArray expected, JsonArray actual, JsonObject bestMatch) {
         Map<Integer, List<Integer>> bestMatches = new HashMap<>();
         AtomicReference<Integer> counter = new AtomicReference<>(0);
         expected.iterator().forEachRemaining(item -> {
@@ -99,7 +100,7 @@ public class MatcherVerticle extends AbstractVerticle {
         return FinalStatus.PASS;
     }
 
-    private FinalStatus match(Object expVal, JsonArray actual, Map<Integer, List<Integer>> bestMatches, int index) {
+    protected FinalStatus match(Object expVal, JsonArray actual, Map<Integer, List<Integer>> bestMatches, int index) {
         AtomicInteger counter = new AtomicInteger(0);
         AtomicInteger matchingMaxCount = new AtomicInteger(0);
         final AtomicReference<FinalStatus> finalStatus = new AtomicReference<>(FinalStatus.FAIL);
@@ -150,9 +151,9 @@ public class MatcherVerticle extends AbstractVerticle {
         return counter.get();
     }
 
-    enum FinalStatus {PASS, FAIL}
+    protected enum FinalStatus {PASS, FAIL}
 
-    enum MatchStatus {
+    protected enum MatchStatus {
         MATCHING, NOT_MATCHING, CAN_NOT_COMPARE
     }
 }
