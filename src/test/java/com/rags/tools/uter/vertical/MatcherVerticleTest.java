@@ -152,9 +152,9 @@ public class MatcherVerticleTest {
 
     // Not working
     @Test
-    void testArrayNotEqual() {
-        JsonArray act = dummyArr().add(objForArray(3));
-        JsonArray exp = dummyArr();
+    void testArrayNotEqual1() {
+        JsonArray act = new JsonArray().add(objForArray(3)).add(objForArray(4));
+        JsonArray exp = new JsonArray().add(objForArray(2)).add(objForArray(3));
 
         JsonObject bestMatch = new JsonObject();
 

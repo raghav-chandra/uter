@@ -6,10 +6,7 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -84,6 +81,9 @@ public class MatcherVerticle extends AbstractVerticle {
         return status.get();
     }
 
+    // todo: Change the algorithm
+    // Checking each iterators best match and removing would not work.
+    // Check the scenario in MatcherVerticleTest.testArrayNotEqual1
     protected FinalStatus match(JsonArray expected, JsonArray actual, JsonObject bestMatch) {
         Map<Integer, List<Integer>> bestMatches = new HashMap<>();
         AtomicReference<Integer> counter = new AtomicReference<>(0);
@@ -97,6 +97,52 @@ public class MatcherVerticle extends AbstractVerticle {
                 }
 
         );
+        return FinalStatus.PASS;
+    }
+
+    private MatchStatus validateFields(JsonArray expected, JsonArray actual) {
+        if (expected == null && actual == null) {
+            return MatchStatus.MATCHING;
+        } else if (expected == null || actual == null) {
+            return MatchStatus.NOT_MATCHING;
+        } else if (expected.size() == 0 && actual.size() == 0) {
+            return MatchStatus.MATCHING;
+        } else if (expected.size() == 0 || actual.size() == 0) {
+            return MatchStatus.NOT_MATCHING;
+        }
+
+        Object expectedObject = expected.getValue(0);
+        Object actualObject = actual.getValue(0);
+
+        if (!expectedObject.getClass().getName().equals(actualObject.getClass().getName())) {
+            return MatchStatus.NOT_MATCHING;
+        }
+
+
+        if (expectedObject instanceof JsonObject) {
+            Set<String> expkeys = ((JsonObject) expectedObject).getMap().keySet();
+            Set<String> actualKeys = ((JsonObject) actualObject).getMap().keySet();
+            if (expkeys.size() != actualKeys.size()) {
+                return MatchStatus.NOT_MATCHING;
+            }
+            return expkeys.stream().filter(actualKeys::contains).count() == expkeys.size() ? MatchStatus.MATCHING : MatchStatus.NOT_MATCHING;
+        }
+
+
+        return MatchStatus.MATCHING;
+
+    }
+
+    protected FinalStatus match2(JsonArray expected, JsonArray actual, JsonObject bestMatch) {
+
+        MatchStatus preCompareStatus = validateFields(expected, actual);
+
+        if (preCompareStatus == MatchStatus.NOT_MATCHING) {
+            return FinalStatus.FAIL;
+        }
+
+
+
         return FinalStatus.PASS;
     }
 
@@ -144,7 +190,7 @@ public class MatcherVerticle extends AbstractVerticle {
     private int getMatchingCounts(JsonObject attributes) {
         AtomicReference<Integer> counter = new AtomicReference<>(0);
         attributes.forEach(item -> {
-            if (item.getValue() == MatchStatus.MATCHING) {
+            if (MatchStatus.MATCHING.name().equals(item.getValue())) {
                 counter.set(counter.get() + 1);
             }
         });
