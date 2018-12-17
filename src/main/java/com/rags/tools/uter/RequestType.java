@@ -13,5 +13,8 @@ public enum RequestType {
 
     MATCH_RESULTS,
 
-    GET_ALL_UC
+    GET_ALL_UC,
+
+    MATCH_ARRAY,
+    MATCH_ARRAY_ELEMENT
 }
