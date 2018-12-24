@@ -35,7 +35,7 @@ public class JsonKey {
         if (!(obj instanceof JsonKey)) {
             return false;
         }
-        for(String key : keyList) {
+        for (String key : keyList) {
             if (!this.jsonObj.getValue(key).equals(((JsonKey) obj).jsonObj.getValue(key))) {
                 return false;
             }

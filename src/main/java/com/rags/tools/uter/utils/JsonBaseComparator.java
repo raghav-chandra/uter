@@ -12,7 +12,7 @@ public class JsonBaseComparator {
     static Map<JsonKey, Map<Integer, List<JsonObject>>> compare(List<String> keys, JsonArray... arrs) {
         Map<JsonKey, Map<Integer, List<JsonObject>>> infoMap = new HashMap<>();
         int arrNo = 0;
-        for(JsonArray jsArr : arrs) {
+        for (JsonArray jsArr : arrs) {
             jsArr.forEach(jsObj -> {
                 JsonKey jsonKey = new JsonKey((JsonObject) jsObj, keys);
                 infoMap.computeIfAbsent(jsonKey, v -> new HashMap<>());
