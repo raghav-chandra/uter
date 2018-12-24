@@ -19,7 +19,7 @@ public class MatcherVerticleTest {
     private Object getValue(JsonObject obj, String keyLoc) {
         List<String> keys = Arrays.asList(keyLoc.split("\\."));
         Object newObj = obj.copy();
-        for(String key : keys) {
+        for (String key : keys) {
             newObj = ((JsonObject) newObj).getValue(key);
         }
         return newObj;
@@ -33,7 +33,6 @@ public class MatcherVerticleTest {
         }).allMatch(Boolean.TRUE::equals);
 
     }
-
 
 
     @Test
@@ -59,27 +58,25 @@ public class MatcherVerticleTest {
         MatcherVerticle.FinalStatus stat = vert.match(expect, actual, attributeMarker, "key1");
 
         Assertions.assertEquals(MatcherVerticle.FinalStatus.PASS, stat);
-        Assertions.assertEquals("MATCHING", ((JsonObject)(attributeMarker.getValue("key1"))).getValue("key1"));
-        Assertions.assertEquals("MATCHING", ((JsonObject)(attributeMarker.getValue("key1"))).getValue("key2"));
+        Assertions.assertEquals("MATCHING", ((JsonObject) (attributeMarker.getValue("key1"))).getValue("key1"));
+        Assertions.assertEquals("MATCHING", ((JsonObject) (attributeMarker.getValue("key1"))).getValue("key2"));
     }
 
     @Test
     void testSimpleObjNull() {
-        JsonObject actual = getDummyObj().put("key2", (String)null);
-        JsonObject expect = getDummyObj().put("key2", (String)null);
+        JsonObject actual = getDummyObj().put("key2", (String) null);
+        JsonObject expect = getDummyObj().put("key2", (String) null);
         JsonObject attributeMarker = new JsonObject();
         FinalStatus stat = vert.match(expect, actual, attributeMarker, "key1");
 
         Assertions.assertEquals(FinalStatus.PASS, stat);
-        Assertions.assertEquals("MATCHING", ((JsonObject)(attributeMarker.getValue("key1"))).getValue("key1"));
-        Assertions.assertEquals("MATCHING", ((JsonObject)(attributeMarker.getValue("key1"))).getValue("key2"));
+        Assertions.assertEquals("MATCHING", ((JsonObject) (attributeMarker.getValue("key1"))).getValue("key1"));
+        Assertions.assertEquals("MATCHING", ((JsonObject) (attributeMarker.getValue("key1"))).getValue("key2"));
 
         actual.put("key2", "wer");
         Assertions.assertEquals(FinalStatus.FAIL, vert.match(expect, actual, attributeMarker, "key1"));
 
     }
-
-
 
 
     @Test
@@ -90,8 +87,8 @@ public class MatcherVerticleTest {
         FinalStatus stat = vert.match(expect, actual, attributeMarker, "key1");
 
         Assertions.assertEquals(FinalStatus.FAIL, stat);
-        Assertions.assertEquals("MATCHING", ((JsonObject)(attributeMarker.getValue("key1"))).getValue("key1"));
-        Assertions.assertEquals("NOT_MATCHING", ((JsonObject)(attributeMarker.getValue("key1"))).getValue("key2"));
+        Assertions.assertEquals("MATCHING", ((JsonObject) (attributeMarker.getValue("key1"))).getValue("key1"));
+        Assertions.assertEquals("NOT_MATCHING", ((JsonObject) (attributeMarker.getValue("key1"))).getValue("key2"));
     }
 
     @Test
@@ -100,7 +97,7 @@ public class MatcherVerticleTest {
         JsonObject exp = getDummyObj();
 
         act.put("obj1", getDummyObj());
-        exp.put("obj1",getDummyObj());
+        exp.put("obj1", getDummyObj());
 
         JsonObject attributeMarker = new JsonObject();
         FinalStatus stat = vert.match(exp, act, attributeMarker, "key1");
@@ -111,14 +108,13 @@ public class MatcherVerticleTest {
     }
 
 
-
     @Test
     void testObjInsideObjNotEqual() {
         JsonObject act = getDummyObj();
         JsonObject exp = getDummyObj();
 
         act.put("obj1", getDummyObj());
-        exp.put("obj1",getDummyObj().put("key1", 234));
+        exp.put("obj1", getDummyObj().put("key1", 234));
 
         JsonObject attributeMarker = new JsonObject();
         FinalStatus stat = vert.match(exp, act, attributeMarker, "key1");
@@ -163,7 +159,6 @@ public class MatcherVerticleTest {
         //Assertions.assertEquals(FinalStatus.FAIL, stat);
 
     }
-
 
 
 }
