@@ -1,13 +1,15 @@
 package com.rags.tools.uter.vertical;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.WorkerExecutor;
-import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,15 @@ public class MatchingUtil {
 
     private static final String MATCH_PASS = "P";
     private static final String MATCH_FAIL = "F";
+
+    public static void main(String[] args) {
+
+        JsonArray expected = new JsonArray(Arrays.asList("Raghav", "Chandra", "Bengaluru", "Prayagraj", "yoyo"));
+        JsonArray actual = new JsonArray(Arrays.asList("Raghav", "Chandra", "Bengaluru", "Prayagraj", "noyo"));
+
+        JsonObject status = new MatchingUtil().findBestMatchingAttrCount(expected, actual);
+        System.out.println(status);
+    }
 
     public JsonObject findBestMatchingAttrCount(JsonArray expected, JsonArray actual) {
         JsonObject status = new JsonObject().put("status", MATCH_PASS);
@@ -33,35 +44,60 @@ public class MatchingUtil {
          * Depends on the content of Array, it'll be decided if we need to put any indexing at the object level or not for using parallel stream
          */
         AtomicInteger counter = new AtomicInteger(-1);
-        JsonObject data = expected.stream().map(exp -> {
+        List<List<JsonObject>> crossResults = expected.stream().map(exp -> {
             counter.set(counter.get() + 1);
             return findBestMatchingAttrCount(exp, counter.get(), actual);
-        }).collect(Collectors.toList()).parallelStream().reduce(new JsonObject().put("status", MATCH_FAIL).put("count", -1).put("diff", new JsonObject()), (accum, obj) -> {
-            if (obj.getString("status").equals(MATCH_FAIL)) {
-                accum.put("status", MATCH_FAIL);
-            }
-            return accum;
+        }).collect(Collectors.toList());
+
+        JsonObject diff = new JsonObject();
+        AtomicBoolean finalStatus = new AtomicBoolean(true);
+
+        counter.set(0);
+        List<List<Boolean>> metrix = new ArrayList<>(expected.size());
+
+        crossResults.stream().forEach(obj -> {
+            List<JsonObject> matchingObjs = obj.stream().filter(data -> data.getString("status").equals(MATCH_PASS)).collect(Collectors.toList());
+            boolean matching = !matchingObjs.isEmpty();
+            finalStatus.set(finalStatus.get() && matching);
+            diff.put(String.valueOf(counter), matching ? matchingObjs.get(0) : findBestMatchedItemAndPopulatMetrix(obj, metrix));
         });
 
-        if (data.getString("status").equals(MATCH_PASS)) {
+        JsonObject finalObj = new JsonObject().put("status", finalStatus.get() ? MATCH_PASS : MATCH_FAIL);
 
+        if (!finalStatus.get()) {
+            finalObj.put("act", actual).put("exp", expected).put("diff", new JsonObject());
         }
 
-        return data;
+        return finalObj;
+    }
+
+    private JsonObject findBestMatchedItemAndPopulatMetrix(List<JsonObject> allMatches, List<List<Boolean>> metrix) {
+        JsonObject bestMatched = new JsonObject();
+        allMatches.stream().sorted((o1, o2) -> o1.getInteger("count") - o2.getInteger("count")).forEach(obj -> {
+            int expIndex = obj.getInteger("elemIndex");
+            if (metrix.get(expIndex) == null) {
+                metrix.set(expIndex, new ArrayList<>());
+                metrix.get(expIndex).set(obj.getInteger("index"), true);
+                break;
+            } else if (metrix.get(expIndex).get(obj.getInteger("index"))){
+                continue;
+            }
+        });
+        return bestMatched;
     }
 
     //We need to send all the data (1XN) so that the matching for the other elements can work properly.
-    private JsonObject findBestMatchingAttrCount(Object exp, int elemIndex, JsonArray array) {
+    private List<JsonObject> findBestMatchingAttrCount(Object exp, int elemIndex, JsonArray array) {
         if (exp == null || array == null) {
             LOGGER.info("Either obj to match or array is null");
-            return new JsonObject().put("status", MATCH_FAIL).put("exp", exp).put("count", -1).put("index", -1);
+            return new ArrayList<>();
         }
         AtomicInteger bestMatch = new AtomicInteger(0);
         AtomicInteger bestMatchIndex = new AtomicInteger(-1);
 
         return array.stream().map(act -> {
             bestMatchIndex.set(bestMatchIndex.get() + 1);
-            JsonObject status = new JsonObject().put("status", MATCH_FAIL).put("exp", exp).put("count", -1).put("index", -1);
+            JsonObject status = new JsonObject().put("status", MATCH_FAIL).put("count", -1).put("index", -1);
             if (isPrimitive(exp) && isPrimitive(act)) {
                 if (exp.equals(act)) {
                     status.put("status", MATCH_PASS).put("count", 1);
@@ -77,20 +113,10 @@ public class MatchingUtil {
             if (status.getString("status").equals(MATCH_FAIL) &&
                     status.getInteger("count") > 0 && bestMatch.get() <= status.getInteger("count")) {
                 bestMatch.set(status.getInteger("count"));
-                status.put("index", bestMatchIndex.get()).put("count", bestMatch.get()).put("diff", status.getJsonObject("diff"));
+                status.put("index", bestMatchIndex.get()).put("count", bestMatch.get()).put("exp", exp).put("act", act).put("diff", status.getJsonObject("diff"));
             }
             return status;
-        }).collect(Collectors.toList()).parallelStream().reduce(new JsonObject().put("status", MATCH_FAIL).put("count", -1).put("elemIndex", elemIndex), (accum, obj) -> {
-
-            // Return best matched data from all matching results.
-            if (obj.getString("status").equals(MATCH_PASS)) {
-                accum.put("status", MATCH_PASS).put("index", obj.getInteger("index"));
-            }
-            if (!accum.getString("status").equals(MATCH_PASS) && accum.getInteger("count") <= obj.getInteger("count")) {
-                obj.iterator().forEachRemaining(entry -> accum.put(entry.getKey(), entry.getValue()));
-            }
-            return accum;
-        });
+        }).collect(Collectors.<JsonObject>toList());
     }
 
     //Check Status if its P its matching else check diff and see whats failing. Nested structure created
