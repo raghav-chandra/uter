@@ -6,14 +6,17 @@ package com.rags.tools.uter;
 public enum RequestType {
     CREATE_UC,
     CREATE_UCS,
+
     FETCH_UC,
     FETCH_UCS,
-    GET_UCS,
+
     EXECUTE_UC,
+    EXECUTE_UCS,
 
     MATCH_RESULTS,
 
     GET_ALL_UC,
+    GET_ALL_EXECUTIONS,
 
     MATCH_ARRAY,
     MATCH_ARRAY_ELEMENT

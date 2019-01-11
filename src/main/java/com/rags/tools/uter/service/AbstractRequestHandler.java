@@ -14,6 +14,8 @@ import io.vertx.ext.web.RoutingContext;
  */
 public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingContext> {
 
+    private final static String COOKIE_STRING = "Cookie";
+
     private final String key;
     private final RequestType requestType;
 
@@ -27,14 +29,14 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         HttpServerRequest request = context.request();
         EventBus eventBus = context.vertx().eventBus();
 
+        String cookie  = request.headers().get(COOKIE_STRING);
         S requestData = getRequestData(request, context.getBody());
         JsonObject reqObject = createRequestObject(key, requestData);
 
-        handleFuture(request, requestData, createFuture(requestType, eventBus, reqObject), eventBus);
-
+        handleFuture(request, requestData, createFuture(requestType, eventBus, reqObject), eventBus, cookie);
     }
 
-    protected void handleFuture(HttpServerRequest request, S requestData, Future<T> future, EventBus eventBus) {
+    protected void handleFuture(HttpServerRequest request, S requestData, Future<T> future, EventBus eventBus, String cookie) {
         future.setHandler(handler -> {
             if (handler.succeeded()) {
                 onSuccess(request, handler.result());
@@ -44,11 +46,11 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         });
     }
 
-    private void onSuccess(HttpServerRequest request, T result) {
+    void onSuccess(HttpServerRequest request, T result) {
         request.response().end(JsonUtil.createSuccessResponse(result).encodePrettily());
     }
 
-    private void onFailure(HttpServerRequest request, Throwable cause) {
+    void onFailure(HttpServerRequest request, Throwable cause) {
         request.response().end(JsonUtil.createFailedResponse(cause.getMessage()).encodePrettily());
     }
 
@@ -64,7 +66,7 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         return future;
     }
 
-    protected JsonObject createRequestObject(String key, S requestData) {
+    private JsonObject createRequestObject(String key, S requestData) {
         return new JsonObject().put(key, requestData);
     }
 
