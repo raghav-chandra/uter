@@ -14,7 +14,7 @@ public class StartupVertical extends AbstractVerticle {
     private static final String WEB_ROOT = "web.root";
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         JsonObject config = config();
 
         Router router = Router.router(vertx);
