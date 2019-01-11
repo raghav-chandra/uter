@@ -1,6 +1,7 @@
 package com.rags.tools.uter.service;
 
 import com.rags.tools.uter.RequestType;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -15,16 +16,26 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Created by ragha on 26-07-2018.
  */
 public class ExecutionService {
     private static final String COOKIE_STRING = "Cookie";
+
     public static Map<ExecutionKey, JsonObject> EXECUTIONS = new ConcurrentHashMap<>();
 
     public static Handler<RoutingContext> ucExecutionHandler() {
         return new ExecutionHandler();
+    }
+
+    public static Handler<RoutingContext> ucsExecutionHandler() {
+        return new UCSExecutionHandler();
+    }
+
+    public static Handler<RoutingContext> getExecutionsHandler() {
+        return new GetExecutionsHandler();
     }
 
     private static Future<JsonObject> createFuture(EventBus eventBus, JsonObject request, RequestType requestType,
@@ -40,14 +51,6 @@ public class ExecutionService {
             }
         });
         return future;
-    }
-
-    public static Handler<RoutingContext> ucsExecutionHandler() {
-        return new UCSExecutionHandler();
-    }
-
-    public static Handler<RoutingContext> getExecutionsHandler() {
-        return new GetExecutionsHandler();
     }
 
     interface ResultHandler {
@@ -70,8 +73,15 @@ public class ExecutionService {
             final ExecutionKey key = new ExecutionKey(cookie, Instant.now().toEpochMilli(), id);
             EXECUTIONS.put(key, new JsonObject().put("status", ExecutionKey.ExecutionStatus.RUNNING));
             retrieveFuture
-                    .compose(uc -> createFuture(eventBus, uc, RequestType.EXECUTE_UC, cookie, (requestObj, result) -> requestObj.put("actual", result)))
-                    .compose(uc -> createFuture(eventBus, uc, RequestType.MATCH_RESULTS, cookie, (reqObj, res) -> reqObj.put("matching", res.getJsonObject("matching")).put("finalStatus", res.getString("finalStatus"))))
+                    .compose(uc -> {
+                        /**
+                         *  Create parallel futures and execute all Urls in parallel with the request
+                         */
+                            //TODO: Add End point configurations.
+//                        return CompositeFuture.all(uc.getJsonArray("endPoints").stream().map(endPoint->{
+                            return createFuture(eventBus, uc, RequestType.EXECUTE_UC, cookie, (requestObj, result) -> requestObj.put("actual", result));
+//                        }).collect(Collectors.toList()));
+                    }).compose(uc -> createFuture(eventBus, uc, RequestType.MATCH_RESULTS, cookie, (reqObj, res) -> reqObj.put("matching", res.getJsonObject("matching")).put("finalStatus", res.getString("finalStatus"))))
                     .compose(matcherResult -> {
                         matcherResult.remove(COOKIE_STRING);
                         matcherResult.remove("id");

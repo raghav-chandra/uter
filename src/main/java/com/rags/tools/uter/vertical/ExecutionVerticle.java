@@ -20,7 +20,7 @@ public class ExecutionVerticle extends AbstractRestServiceVerticle {
         eventBus.<JsonObject>consumer(RequestType.EXECUTE_UC.name(), message -> {
 
             JsonObject uc = message.body().getJsonObject("uc");
-            
+
             HttpClientOptions clientOption = createClientOptions(uc.getBoolean("ssl"), uc.getString("host"), uc.getInteger("port"));
 
             if (HttpMethod.POST.name().equals(uc.getString("type"))) {
