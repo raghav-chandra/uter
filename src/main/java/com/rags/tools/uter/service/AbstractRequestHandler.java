@@ -29,7 +29,7 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         HttpServerRequest request = context.request();
         EventBus eventBus = context.vertx().eventBus();
 
-        String cookie  = request.headers().get(COOKIE_STRING);
+        String cookie = request.headers().get(COOKIE_STRING);
         S requestData = getRequestData(request, context.getBody());
         JsonObject reqObject = createRequestObject(key, requestData);
 

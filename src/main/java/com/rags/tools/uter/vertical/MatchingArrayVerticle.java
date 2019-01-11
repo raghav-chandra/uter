@@ -20,6 +20,10 @@ public class MatchingArrayVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(MatchingArrayVerticle.class);
     private static final int INFINITY = Integer.MAX_VALUE;
 
+    static boolean isPrimitive(Object o) {
+        return o instanceof String || o instanceof Double || o instanceof Float || o instanceof Integer || o instanceof Boolean;
+    }
+
     @Override
     public void start() {
         EventBus eventBus = getVertx().eventBus();
@@ -155,10 +159,6 @@ public class MatchingArrayVerticle extends AbstractVerticle {
         }
 
         return new MatchingStatus(count != bestMatch.get() ? MatcherVerticle.FinalStatus.FAIL : MatcherVerticle.FinalStatus.PASS, bestMatch.get(), -1);
-    }
-
-    static boolean isPrimitive(Object o) {
-        return o instanceof String || o instanceof Double || o instanceof Float || o instanceof Integer || o instanceof Boolean;
     }
 }
 
