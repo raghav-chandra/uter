@@ -2,8 +2,8 @@ import {USER_ACTION} from './constants'
 import {persist,retrieve} from './localStorage'
 
 const CALL_MAPPER={};
-CALL_MAPPER[USER_ACTION.SAVE_UC]=saveUseCase;
-CALL_MAPPER[USER_ACTION.RETRIEVE_UC]=retrieveUseCase;
+CALL_MAPPER[USER_ACTION.SAVE_UC] = saveUseCase;
+CALL_MAPPER[USER_ACTION.RETRIEVE_UC] = retrieveUseCase;
 
 export function execute(action, param) {
 	return CALL_MAPPER[action](param);
@@ -26,13 +26,13 @@ const HTTP_GET ='GET';
 const HTTP_POST ='POST';
 
 export function executeRequest(action, param, data = null) {
-        try {
-            return CALLRequest_MAPPER[action](dispatch, action, param, data);
-        } catch (e) {
-            alert ('Failed while ' + action + '. Please retry');
-        }
+    try {
+        return CALL_MAPPER[action](dispatch, action, param, data);
+    } catch (e) {
+        alert ('Failed while ' + action + '. Please retry');
     }
 }
+
 
 function executePostRequest (dispatch, url, data, successAction) {
     executeRequest(dispatch,url,successAction,HTTP_POST, data);
@@ -50,8 +50,8 @@ function executeRequest (dispatch, url, requestType,successAction, data) {
             let req = new Request(url, {
                 method:'POST',
                 credentials:'include',
-                headers: {'Content-Type' : 'application/json'}
-                body: data !=null && typeof data === 'object' ? JSON.stringify(data) :data;
+                headers: {'Content-Type' : 'application/json'},
+                body: data !=null && typeof data === 'object' ? JSON.stringify(data) : data
              });
              return fetch(req);
         }
@@ -65,7 +65,7 @@ function executeRequest (dispatch, url, requestType,successAction, data) {
         }
     }).then (json=>{
         if(json.success) {
-            return dispatch successAction(json.data);
+            return dispatch (successAction(json.data));
         } else {
             throw json.message;
         }
