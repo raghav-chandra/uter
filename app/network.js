@@ -1,25 +1,14 @@
 import {USER_ACTION} from './constants'
 import {persist,retrieve} from './localStorage'
 
-const CALL_MAPPER={};
-CALL_MAPPER[USER_ACTION.SAVE_UC] = saveUseCase;
-CALL_MAPPER[USER_ACTION.RETRIEVE_UC] = retrieveUseCase;
-
-export function execute(action, param) {
-	return CALL_MAPPER[action](param);
-}
-
-function saveUseCase(param) {
-	persist('charag',param);
-}
-
-function retrieveUseCase(param) {
-	let uc1=JSON.parse(retrieve('charag'));
-	uc1.id='charag';
-	let uc2=JSON.parse(retrieve('raghav'));
-	uc2.id='raghav';
-	return [uc1,uc2];
-}
+const CALL_MAPPER = {
+    [USER_ACTION.SAVE_UC] : (dispatch, action, param, data) => executeGetRequest(dispatch, 'futor/all', retrieveAll),
+    [USER_ACTION.RETRIEVE_ALL_EXECUTIONS] : (dispatch, action, param, data) => executeGetRequest(dispatch, 'futor/executions/all', executions),
+    [USER_ACTION.EXECUTE_UC] : (dispatch, action, param, data) => {
+        dispatch(ucExecResult());
+        executeGetRequest(dispatch, 'futor/execute/uc/' + param, ucExecResult);
+    }
+};
 
 
 const HTTP_GET ='GET';
@@ -35,11 +24,11 @@ export function executeRequest(action, param, data = null) {
 
 
 function executePostRequest (dispatch, url, data, successAction) {
-    executeRequest(dispatch,url,successAction,HTTP_POST, data);
+    executeRequest(dispatch, url, successAction, HTTP_POST, data);
 }
 
 function executeGetRequest (dispatch, url, successAction) {
-    executeRequest(dispatch,url,retrieveItems, HTTP_GET);
+    executeRequest(dispatch, url, successAction, HTTP_GET);
 }
 
 function executeRequest (dispatch, url, requestType,successAction, data) {
