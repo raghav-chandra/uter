@@ -58,7 +58,7 @@ export class UseCaseCards extends React.Component {
         }
 
         let data = [];
-        this.props.useCases.forEach(uc => data.push(<UseCase uc = {uc}));
+        this.props.useCases.forEach(uc => data.push(<UseCase uc = {uc} />));
 
         return (<div className = 'pull-left'>{data}</div>);
 

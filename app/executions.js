@@ -6,14 +6,14 @@ import ReactDataGrid from 'react-data-grid';
 import {Toolbar, Editors} from 'react-data-grid-addons';
 
 import {launchComparatorModal} from './redux/action';
-import ComparatorModal from '../comparatorModal';
+import ComparatorModal from './comparatorModal';
 
 
 class ColorFormatter extends React.Component {
     render() {
         const exec = this.props.value;
         let status = exec.finalStatus;
-        return (div onClick={e => this.props.showResult(exec)}
+        return (<div onClick={e => this.props.showResult(exec)}
                     style={{backgroundColor: status === 'F' ? 'red' : 'lightgreen', textAlign: 'center'}}>
                     <h4>{status}</h4>
         </div>);
@@ -22,8 +22,8 @@ class ColorFormatter extends React.Component {
 
 const ResultFormatter = connect(null, dispatch => {
     return {
-        showResult: data => dispatch(launchComparatorModal(true, data));
-    }
+        showResult: data => dispatch(launchComparatorModal(true, data))
+    };
 })(ColorFormatter);
 
 const columns = [
@@ -60,7 +60,7 @@ class Executions extends React.Component {
                 enableCellSelect={true}
                 enableRowSelect={true}
                 rowGetter={index => this.state.executions[index]}
-                rowCount={this.state.executions.length}
+                rowCount={this.state.executions.length} />
         </div>);
     }
 }
