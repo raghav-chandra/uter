@@ -53,8 +53,8 @@ public class ExecutionService {
         return future;
     }
 
-    interface ResultHandler {
-        JsonObject handle(JsonObject requestObj, JsonObject result);
+    interface ResultHandler<T> {
+        JsonObject handle(JsonObject requestObj, T result);
     }
 
     static class ExecutionHandler extends AbstractRequestHandler<String, JsonObject> {
@@ -81,7 +81,7 @@ public class ExecutionService {
 //                        return CompositeFuture.all(uc.getJsonArray("endPoints").stream().map(endPoint->{
                             return createFuture(eventBus, uc, RequestType.EXECUTE_UC, cookie, (requestObj, result) -> requestObj.put("actual", result));
 //                        }).collect(Collectors.toList()));
-                    }).compose(uc -> createFuture(eventBus, uc, RequestType.MATCH_RESULTS, cookie, (reqObj, res) -> reqObj.put("matching", res.getJsonObject("matching")).put("finalStatus", res.getString("finalStatus"))))
+                    }).compose(uc -> createFuture(eventBus, uc, RequestType.MATCH_RESULTS, cookie, (ResultHandler<JsonObject>) (reqObj, res) -> reqObj.put("uc", uc.getJsonObject("uc")).put("act", uc.getValue("actual"))))
                     .compose(matcherResult -> {
                         matcherResult.remove(COOKIE_STRING);
                         matcherResult.remove("id");

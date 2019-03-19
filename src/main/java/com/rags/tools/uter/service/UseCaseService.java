@@ -29,15 +29,6 @@ public class UseCaseService {
         return new RetrievalHandler("id", RequestType.FETCH_UCS);
     }
 
-    public static Handler<RoutingContext> getAllUCHandler() {
-        return new AbstractRequestHandler<JsonObject, JsonArray>("", RequestType.GET_ALL_UC) {
-            @Override
-            protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
-                return new JsonObject();
-            }
-        };
-    }
-
     static class CreationHandler extends AbstractRequestHandler<JsonObject, JsonObject> {
         CreationHandler(String key, RequestType requestType) {
             super(key, requestType);
@@ -59,5 +50,14 @@ public class UseCaseService {
             return request.getParam("id");
         }
 
+    }
+
+    public static Handler<RoutingContext> getAllUCHandler() {
+        return new AbstractRequestHandler<JsonObject, JsonArray>("", RequestType.GET_ALL_UC) {
+            @Override
+            protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
+                return new JsonObject();
+            }
+        };
     }
 }
