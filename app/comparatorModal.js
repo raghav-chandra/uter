@@ -41,11 +41,11 @@ export class Comparator extends React.Component {
                         tds.push(<td>{expected[key]}</td>);
                     }
 
-                    let nestedObj = diff.status === 'P' || diff[key].status === 'P'
+                    let nestedObj = !diff || diff.status === 'P' || diff[key].status === 'P'
                                     ? {act: this.state.act[key], exp: expected[key], diff: {status: 'P'}} : diff[key];
                     nestedObj.title = 'Comparison for : ' + key;
 
-                    tds.push(<td style={diff.status === 'P' || diff[key].status === 'P' ? {} : {backgroundColor: 'red'}}
+                    tds.push(<td style={!diff || diff.status === 'P' || diff[key].status === 'P' ? {} : {backgroundColor: 'red'}}
                                 onClick = {() => expObjType ? this.toggleNested(nestedObj) : null}>
                         {expObjType ? expObjType : this.state.act[key]}</td>);
 
