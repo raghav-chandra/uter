@@ -22,11 +22,11 @@ public class MatcherVerticle extends AbstractVerticle {
         EventBus eventBus = vertx.eventBus();
         eventBus.<JsonObject>consumer(RequestType.MATCH_RESULTS.name(), message -> {
             Object actual = message.body().getValue("actual");
-            Object expected = Json.decodeValue(message.body().getJsonObject("uc").getString("expected"), Object.class);
-            if (expected instanceof Map) {
-                message.reply(new JsonMatcher().compare(new JsonObject((Map) expected), (JsonObject) actual));
-            } else if (expected instanceof List) {
-                message.reply(new JsonMatcher().compare(new JsonArray((List) expected), (JsonArray) actual));
+            Object expected = message.body().getValue("expected");
+            if (expected instanceof JsonObject) {
+                message.reply(new JsonMatcher().compare((JsonObject) expected, (JsonObject) actual));
+            } else if (expected instanceof JsonArray) {
+                message.reply(new JsonMatcher().compare((JsonArray) expected, (JsonArray) actual));
             }
         });
     }

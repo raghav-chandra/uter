@@ -19,13 +19,13 @@ public class ExecutionVerticle extends AbstractRestServiceVerticle {
 
         eventBus.<JsonObject>consumer(RequestType.EXECUTE_UC.name(), message -> {
             JsonObject uc = message.body().getJsonObject("uc");
-            HttpClientOptions clientOption = createClientOptions(uc.getBoolean("bepssl"), uc.getString("bephost"), uc.getInteger("bepport"));
-            if (HttpMethod.POST.name().equals(uc.getString("beptype"))) {
-                executePostRequest(clientOption, message, uc.getString("beppath"), uc.getValue("payload"), ResponseType.valueOf(uc.getString("responseType")));
-            } else if (HttpMethod.GET.name().equals(uc.getString("beptype"))) {
-                executeGetRequest(clientOption, message, uc.getString("beppath"), ResponseType.valueOf(uc.getString("responseType")));
+            HttpClientOptions clientOption = createClientOptions(uc.getBoolean("ssl"), uc.getString("host"), uc.getInteger("port"));
+            if (HttpMethod.POST.name().equals(uc.getString("type"))) {
+                executePostRequest(clientOption, message, uc.getString("path"), uc.getValue("payload"), ResponseType.valueOf(uc.getString("responseType")));
+            } else if (HttpMethod.GET.name().equals(uc.getString("type"))) {
+                executeGetRequest(clientOption, message, uc.getString("path"), ResponseType.valueOf(uc.getString("responseType")));
             } else {
-                message.fail(9999, "Type " + uc.getString("beptype") + " not supported");
+                message.fail(9999, "Type " + uc.getString("type") + " not supported");
             }
         });
 
