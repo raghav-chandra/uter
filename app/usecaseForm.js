@@ -203,7 +203,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		saveUC: uc => dispatch(execute(USER ACTION.SAVE_UC, null, uc))
+		saveUC: uc => dispatch(execute(USER_ACTION.SAVE_UC, null, uc))
 	}
 };
 export default connect(mapStateToProps, mapDispatchToProps)(UseCaseForm);
