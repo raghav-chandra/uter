@@ -2,6 +2,7 @@ package com.rags.tools.uter.vertical;
 
 import com.rags.tools.uter.RequestType;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Created by ragha on 26-07-2018.
@@ -25,17 +27,20 @@ public class UseCaseVerticle extends AbstractDBVerticle {
 
         eventBus.<JsonObject>consumer(RequestType.CREATE_UC.name(), message -> {
             JsonObject uc = message.body().getJsonObject("uc");
-            String id = "uc" + ucCounter++;
+            String id = uc.getString("id");
+            if (id == null) {
+                id = "uc" + ucCounter++;
+            }
             uc.put("id", id).put("path", "/ " + uc.getString("path"));
             UC.put(id, uc);
             message.reply(uc);
         });
 
         eventBus.<JsonObject>consumer(RequestType.CREATE_UCS.name(), message -> {
-            JsonArray ucs = message.body().getJsonArray("ucs");
+            JsonArray ucIds = message.body().getJsonArray("ucIds");
             String id = "ucs" + ucsCounter++;
-            UCS.put(id, ucs.getList());
-            message.reply(new JsonObject().put("id", id).put("ucs", ucs));
+            UCS.put(id, ucIds.getList());
+            message.reply(new JsonObject().put("id", id).put("ucIds", ucIds));
         });
 
         eventBus.<JsonObject>consumer(RequestType.FETCH_UC.name(), message -> {
@@ -54,6 +59,10 @@ public class UseCaseVerticle extends AbstractDBVerticle {
         eventBus.<JsonObject>consumer(RequestType.GET_ALL_UC.name(), message -> {
             message.reply(new JsonArray(new ArrayList(UC.values())));
         });
-
+        eventBus.<JsonObject>consumer(RequestType.LOOKUP_UC.name(), message -> {
+            JsonObject criteria = message.body().getJsonObject("criteria");
+            String searchString = criteria.getString("searchString");
+            message.reply(new JsonArray(UC.values().stream().filter(val -> Json.encode(val).contains(searchString)).collect(Collectors.toList())));
+        });
     }
 }
