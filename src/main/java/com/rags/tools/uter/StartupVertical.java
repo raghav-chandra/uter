@@ -27,27 +27,28 @@ public class StartupVertical extends AbstractVerticle {
     public void start() {
         JsonObject config = config();
         Router router = Router.router(vertx);
-        VERTICLES.forEach(verticle -> vertx.deployVerticle(verticle, new DeploymentOptions().setConfig(config), handler -> {
-            if (handler.succeeded()) {
-                System.out.println("Deployed " + verticle.getName());
-            } else {
-                handler.cause().printStackTrace();
-            }
-        }));
+        VERTICLES.forEach(verticle ->
+                vertx.deployVerticle(verticle, new DeploymentOptions().setConfig(config), handler -> {
+                    if (handler.succeeded()) {
+                        System.out.println("Deployed " + verticle.getName());
+                    } else {
+                        handler.cause().printStackTrace();
+                    }
+                }));
 
         router.route().handler(BodyHandler.create());
         router.post("/futor/uc/create").handler(UseCaseService.createUCHandler());
         router.post("/futor/ucs/create").handler(UseCaseService.createUCSHandler());
 
-//        router.get("/futor/ucs/:id").handler(UseCaseService.createUCSHandler());
-//        router.get("/futor/uc/:id").handler(UseCaseService.createUCSHandler());
-
-        router.get("/futor/execute/uc/:id").handler(ExecutionService.ucExecutionHandler());
+        router.get("/futor/ucs/:id").handler(UseCaseService.createUCSHandler());
+        router.get("/futor/uc/:id").handler(UseCaseService.createUCSHandler());
+        router.post("/futor/uc/lookup").handler(UseCaseService.createUCLookupHandler());
 
 
         router.get("/futor/all").handler(UseCaseService.getAllUCHandler());
         router.get("/futor/executions/all").handler(ExecutionService.getExecutionsHandler());
-
+        router.get("/futor/execute/uc/:id").handler(ExecutionService.ucExecutionHandler());
+//        router.get("/futor/execute/ucs/:id").handler(ExecutionService.ucsExecutionHandler());
         router.route().handler(StaticHandler.create(config().getString(WEB_ROOT)));
         HttpServer server = vertx.createHttpServer().requestHandler(router::accept);
         server.listen(8866);

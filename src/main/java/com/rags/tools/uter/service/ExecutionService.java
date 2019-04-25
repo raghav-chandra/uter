@@ -17,47 +17,14 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * Created by ragha on 26-07-2018.
  */
 public class ExecutionService {
-    private static final String COOKIE_STRING = "Cookie";
-
-    public static Map<ExecutionKey, JsonObject> EXECUTIONS = new ConcurrentHashMap<>();
 
     public static Handler<RoutingContext> ucExecutionHandler() {
         return new ExecutionHandler();
-    }
-
-    public static Handler<RoutingContext> ucsExecutionHandler() {
-        return new UCSExecutionHandler();
-    }
-
-    public static Handler<RoutingContext> getExecutionsHandler() {
-        return new GetExecutionsHandler();
-    }
-
-    private static Future<JsonObject> createFuture(EventBus eventBus, JsonObject request, RequestType requestType,
-                                                   String cookie, ResultHandler resultHandler) {
-        Future<JsonObject> future = Future.future();
-        request.put(COOKIE_STRING, cookie);
-
-        eventBus.<JsonObject>send(requestType.name(), request, reply -> {
-            if (reply.succeeded()) {
-                future.complete(resultHandler.handle(request, reply.result().body()));
-            } else {
-                future.fail(reply.cause());
-            }
-        });
-        return future;
-    }
-
-    interface ResultHandler<T> {
-        JsonObject handle(JsonObject requestObj, T result);
     }
 
     static class ExecutionHandler extends AbstractRequestHandler<String, JsonObject> {
@@ -88,19 +55,19 @@ public class ExecutionService {
                 }
                 return CompositeFuture.all(futures);
             }).compose(apiResults -> {
-                        JsonObject benchResult = apiResults.resultAt(0);
-                        JsonObject uc = benchResult.getJsonObject("uc");
-                        JsonObject matchingReq = new JsonObject().put("expected", Json.decodeValue(uc.getString("expected"), Object.class)).put("actual", benchResult.getValue("result"));
-                        if ("BAT".equals(uc.getString("BAndTComp"))) {
-                            JsonObject expectedResult = apiResults.resultAt(1);
-                            matchingReq = new JsonObject()
-                                    .put("expected", benchResult.getValue("result"))
-                                    .put("actual", expectedResult.getValue("result"));
-                        }
-                        return createFuture(eventBus, matchingReq, RequestType.MATCH_RESULTS, cookie, (ResultHandler<JsonObject>)
-                                (reqObj, res) -> res.put("uc", uc).put("act", reqObj.getValue("actual")).put("exp", reqObj.getValue("expected")));
-                    }
-            ).compose(matcherResult -> {
+                JsonObject benchResult = apiResults.resultAt(0);
+                JsonObject uc = benchResult.getJsonObject("uc");
+                JsonObject matchingReq = new JsonObject()
+                        .put("expected", Json.decodeValue(uc.getString("expected"), Object.class))
+                        .put("actual", benchResult.getValue("result"));
+                if ("BAT".equals(uc.getString("BAndTComp"))) {
+                    JsonObject expectedResult = apiResults.resultAt(1);
+                    matchingReq = new JsonObject()
+                            .put("expected", benchResult.getValue("result"))
+                            .put("actual", expectedResult.getValue("result"));
+                }
+                return createFuture(eventBus, matchingReq, RequestType.MATCH_RESULTS, cookie, (ResultHandler<JsonObject>) (reqObj, res) -> res.put("uc", uc).put("act", reqObj.getValue("actual")).put("exp", reqObj.getValue("expected")));
+            }).compose(matcherResult -> {
                 updateExecution(eventBus, key, RequestType.FINISH_EXECUTION, executionData.put("executions", matcherResult));
                 onSuccess(request, matcherResult);
             }, finalFuture.setHandler(handler -> {
@@ -114,9 +81,10 @@ public class ExecutionService {
         }
 
         private JsonObject createApiRequest(String type, String cookie, JsonObject uc) {
-            return new JsonObject().put("Cookie", cookie)
+            return new JsonObject()
+                    .put("Cookie", cookie)
                     .put("request", new JsonObject()
-                            .put("ss1", uc.getBoolean(type + "ss1"))
+                            .put("ssl", uc.getBoolean(type + "ssl"))
                             .put("type", uc.getString(type + "type"))
                             .put("host", uc.getString(type + "host"))
                             .put("port", uc.getInteger(type + "port"))
@@ -132,6 +100,36 @@ public class ExecutionService {
         eventBus.<JsonObject>send(status.name(), data.put("id", id));
     }
 
+    static class GetExecutionsHandler extends AbstractRequestHandler<JsonObject, JsonArray> {
+        GetExecutionsHandler() {
+            super("criteria", RequestType.GET_ALL_EXECUTIONS);
+        }
+
+        @Override
+        protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
+            return body == null || body.toString().isEmpty() ? new JsonObject() : body.toJsonObject();
+        }
+    }
+
+    private static Future<JsonObject> createFuture(EventBus eventBus, JsonObject request, RequestType requestType,
+                                                   String cookie, ResultHandler resultHandler) {
+        Future<JsonObject> future = Future.future();
+        request.put(AbstractRequestHandler.COOKIE_STRING, cookie);
+
+        eventBus.<JsonObject>send(requestType.name(), request, reply -> {
+            if (reply.succeeded()) {
+                future.complete(resultHandler.handle(request, reply.result().body()));
+            } else {
+                future.fail(reply.cause());
+            }
+        });
+        return future;
+    }
+
+    public static Handler<RoutingContext> ucsExecutionHandler() {
+        return new UCSExecutionHandler();
+    }
+
     static class UCSExecutionHandler extends AbstractRequestHandler<String, JsonObject> {
         UCSExecutionHandler() {
             super("ucs", RequestType.FETCH_UCS);
@@ -143,15 +141,12 @@ public class ExecutionService {
         }
     }
 
-    static class GetExecutionsHandler extends AbstractRequestHandler<JsonObject, JsonArray> {
-        GetExecutionsHandler() {
-            super("criteria", RequestType.GET_ALL_EXECUTIONS);
-        }
+    public static Handler<RoutingContext> getExecutionsHandler() {
+        return new GetExecutionsHandler();
+    }
 
-        @Override
-        protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
-            return body == null || body.toString().isEmpty() ? new JsonObject() : body.toJsonObject();
-        }
+    interface ResultHandler<T> {
+        JsonObject handle(JsonObject requestObj, T result);
     }
 
     public static class ExecutionKey {

@@ -14,7 +14,7 @@ import io.vertx.ext.web.RoutingContext;
  */
 public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingContext> {
 
-    private final static String COOKIE_STRING = "Cookie";
+    protected final static String COOKIE_STRING = "Cookie";
 
     private final String key;
     private final RequestType requestType;
@@ -31,7 +31,7 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
 
         String cookie = request.headers().get(COOKIE_STRING);
         S requestData = getRequestData(request, context.getBody());
-        JsonObject reqObject = createRequestObject(key, requestData);
+        JsonObject reqObject = createRequestObject(key, requestData, cookie);
 
         handleFuture(request, requestData, createFuture(requestType, eventBus, reqObject), eventBus, cookie);
     }
@@ -66,8 +66,8 @@ public abstract class AbstractRequestHandler<S, T> implements Handler<RoutingCon
         return future;
     }
 
-    private JsonObject createRequestObject(String key, S requestData) {
-        return new JsonObject().put(key, requestData);
+    private JsonObject createRequestObject(String key, S requestData, String cookie) {
+        return new JsonObject().put(key, requestData).put(COOKIE_STRING, cookie);
     }
 
     protected abstract S getRequestData(HttpServerRequest request, Buffer body);

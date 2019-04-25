@@ -29,6 +29,16 @@ public class UseCaseService {
         return new RetrievalHandler("id", RequestType.FETCH_UCS);
     }
 
+    public static Handler<RoutingContext> createUCLookupHandler() {
+        return new AbstractRequestHandler<JsonObject, JsonArray>("criteria", RequestType.LOOKUP_UC) {
+
+            @Override
+            protected JsonObject getRequestData(HttpServerRequest request, Buffer body) {
+                return body != null ? body.toJsonObject() : new JsonObject();
+            }
+        };
+    }
+
     static class CreationHandler extends AbstractRequestHandler<JsonObject, JsonObject> {
         CreationHandler(String key, RequestType requestType) {
             super(key, requestType);
