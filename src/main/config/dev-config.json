@@ -1,4 +1,10 @@
 {
   "web.root": "",
-  "web.port": 8866
+  "web.port": 8866,
+
+  "elastic.enable": false,
+
+  "elastic.cluster.host": "",
+  "elastic.cluster.port": 9200,
+  "elastic.cluster.index": "futor"
 }
