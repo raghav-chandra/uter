@@ -1,4 +1,4 @@
-package com.rags.tools.uter.vertical;
+package com.rags.tools.uter.verticle;
 
 import com.rags.tools.matcher.JsonMatcher;
 import com.rags.tools.uter.RequestType;

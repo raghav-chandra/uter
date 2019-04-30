@@ -1,7 +1,6 @@
-package com.rags.tools.uter.vertical;
+package com.rags.tools.uter.verticle;
 
 import com.rags.tools.uter.RequestType;
-import com.rags.tools.uter.service.ExecutionService;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;

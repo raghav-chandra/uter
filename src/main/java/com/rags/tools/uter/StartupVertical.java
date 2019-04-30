@@ -2,9 +2,9 @@ package com.rags.tools.uter;
 
 import com.rags.tools.uter.service.ExecutionService;
 import com.rags.tools.uter.service.UseCaseService;
-import com.rags.tools.uter.vertical.ExecutionVerticle;
-import com.rags.tools.uter.vertical.MatcherVerticle;
-import com.rags.tools.uter.vertical.UseCaseVerticle;
+import com.rags.tools.uter.verticle.ExecutionVerticle;
+import com.rags.tools.uter.verticle.MatcherVerticle;
+import com.rags.tools.uter.verticle.UseCaseVerticle;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.http.HttpServer;

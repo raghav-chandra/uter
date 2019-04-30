@@ -1,4 +1,4 @@
-package com.rags.tools.uter.vertical;
+package com.rags.tools.uter.verticle;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.Message;
