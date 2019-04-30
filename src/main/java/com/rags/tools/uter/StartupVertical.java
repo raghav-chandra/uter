@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class StartupVertical extends AbstractVerticle {
     private static final String WEB_ROOT = "web.root";
+    private static final String WEB_PORT = "web.port";
     private static final List<Class<? extends AbstractVerticle>> VERTICLES = Arrays.asList(UseCaseVerticle.class, ExecutionVerticle.class, MatcherVerticle.class);
 
     @Override
@@ -44,13 +45,12 @@ public class StartupVertical extends AbstractVerticle {
         router.get("/futor/uc/:id").handler(UseCaseService.createUCSHandler());
         router.post("/futor/uc/lookup").handler(UseCaseService.createUCLookupHandler());
 
-
         router.get("/futor/all").handler(UseCaseService.getAllUCHandler());
         router.get("/futor/executions/all").handler(ExecutionService.getExecutionsHandler());
         router.get("/futor/execute/uc/:id").handler(ExecutionService.ucExecutionHandler());
-//        router.get("/futor/execute/ucs/:id").handler(ExecutionService.ucsExecutionHandler());
+
         router.route().handler(StaticHandler.create(config().getString(WEB_ROOT)));
         HttpServer server = vertx.createHttpServer().requestHandler(router::accept);
-        server.listen(8866);
+        server.listen(config().getInteger(WEB_PORT));
     }
 }
