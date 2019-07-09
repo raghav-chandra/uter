@@ -80,7 +80,7 @@ export class Comparator extends React.Component {
                                 {body}
                             </tbody>
                         </Table>
-                    <Modal.Body>
+                    </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.props.closePopup}>Close</Button>
                     </Modal.Footer>

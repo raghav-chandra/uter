@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Card, CardBody, Button, ButtonGroup, CardTitle, CardText} from 'reactstrap';
+import {Card, CardBody, Button, ButtonGroup, CardTitle, CardText} from 'react-bootstrap';
 
 import {USER_ACTION} from './constants';
 import {execute} from './network';

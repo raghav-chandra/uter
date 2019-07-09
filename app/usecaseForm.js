@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Button, FormGroup, ControlLabel, FormControl, Form, Col, InputGroup} from 'react-bootstrap';
 
-import {USER ACTION} from './constants';
+import {USER_ACTION} from './constants';
 import {execute} from './network';
 
 class EndPoint extends React.Component {
@@ -16,7 +16,7 @@ class EndPoint extends React.Component {
 				<FormControl componentClass='select' placeholder='Get/Post'
 						onChange={this.props.handleChange}
 						name={epId + 'type'} value={ep[epId + 'type']}
-						disabled={disabledAttr[epId + 'type'}>
+						disabled={disabledAttr[epId + 'type']}>
 					<option value='GET'>GET</option>
 					<option value='POST'>POST</option>
 				</FormControl>
@@ -26,7 +26,7 @@ class EndPoint extends React.Component {
 				<InputGroup>
 					<FormControl componentClass='select' placeholder='http/https'
 							onChange={this.props.handleChange}
-							name={epId + 'ssl'} value={ep[epId + 'ssl']}›
+							name={epId + 'ssl'} value={ep[epId + 'ssl']}>
 						<option value='false'>http</option>
 						<option value='true'>https</option>
 					</FormControl>
@@ -140,7 +140,7 @@ class UseCaseForm extends React.Component {
 			bepssl: currState.bepssl === 'true' || currState.bepssl === true,
 			bephost: currState.bephost,
 			bepport: parseInt(currState.bepport),
-			beppath: currState.beppath
+			beppath: currState.beppath,
 			beptype: currState.beptype
 		};
 
@@ -240,6 +240,7 @@ class UseCaseForm extends React.Component {
 			</div>);
 		 }
  	}
+}
 
 const mapStateToProps = state => {
 	return {};

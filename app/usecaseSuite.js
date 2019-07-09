@@ -16,27 +16,32 @@ const columns = [
 class UseCasesResults extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {ucs: this.props.useCases, selectedIndexes: [], selectedIds: [], searchString: ''}
+        this.state = {ucs: this.props.useCases, selectedIndexes: [], selectedIds: [], searchString: ''};
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
     }
 
 	componentWillReceiveProps (nextProps) {
 		this.setState({ucs: nextProps.useCases, selectedIndexes: [], selectedIds: []});
 	}
 
-	onRowsSelected	= rows => {
+	/*onRowsSelected = rows => {
 		this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx)),
 			selectedIds: this.state.selectedIds.concat(rows.map(r => r.row.id))});
-	};
+	};*/
 
-	onRowsDeselected = rows => {
+	/*onRowsDeselected = rows => {
 		let rowIndexes = rows.map(r => r.row.id);
 		this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1),
 			selectedIds: this.state.selectedIds.filter(i => rowIndexes.indexOf(i) === -1)});
-	};
+	};*/
 
-	handleChange = e => this.setState({[e.target.name] : e.target.value});
+	handleChange(e) {
+	 	e.preventDefault();
+		this.setState({[e.target.name] : e.target.value});
+	}
 
-	handleSearch = e => {
+	handleSearch(e)  {
 		e.preventDefault();
 		this.props.queryUseCases(this.state.searchString);
 	}
@@ -68,8 +73,15 @@ class UseCasesResults extends React.Component {
 				  rowSelection={{
 					showCheckbox: true,
 					enableShiftSelect: true,
-					onRowsSelected: this.onRowsSelected,
-					onRowsDeselected: this.onRowsDeselected,
+					onRowsSelected: rows => {
+                                    		this.setState({selectedIndexes: this.state.selectedIndexes.concat(rows.map(r => r.rowIdx)),
+                                    			selectedIds: this.state.selectedIds.concat(rows.map(r => r.row.id))});
+                                    	},
+					onRowsDeselected: rows => {
+                                      		let rowIndexes = rows.map(r => r.row.id);
+                                      		this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1),
+                                      			selectedIds: this.state.selectedIds.filter(i => rowIndexes.indexOf(i) === -1)});
+                                      	},
 					selectBy: {
 					  indexes: this.state.selectedIndexes
 					}
@@ -79,7 +91,7 @@ class UseCasesResults extends React.Component {
     }
 }
 
-const mapDispatchToProps = state => {
+const mapStateToProps = state => {
     return {
         useCases: state.retrieveAll.useCases,
         fetching: state.retrieveAll.fetching
@@ -92,10 +104,4 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-export default connect(mapStateToProps, null)(UseCasesResults);
-
-export class UseCaseSuiteForm extends React.Component {
-	render() {
-		return (<div>Show form to add a new Suite and list to UCs to select </div>);
-	}
-}
+export default connect(mapStateToProps, mapDispatchToProps)(UseCasesResults);
