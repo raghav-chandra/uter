@@ -1,0 +1,38 @@
+Login :
+    1. Login id and password
+Registration :
+    1. Login id and password
+    2. Group to attached  or default it to public
+Dashboard :
+    1. Show private usecase based on the logged in users
+    2. Search options with local storage to store last searched attributes
+    3. List down usecases and suites.
+    4. Suites should have details of list of usecases attached.
+    5. Options to edit, delete and play usecases/suite.
+Add Usecases :
+    1. Summary, Detail, Personal/Group
+    2. URL1, URL2
+    3. Option to chose from (expected vs bench & Test)
+    4. Expected Data Type
+    5. Expected Data
+    6. Input Data
+    7. Option to add in personal or to the group
+Add Suite :
+    1. Summarty, detail
+    2. Search option to choose usecases/suite (nestedt suite option)
+    3. Option to add in personal or to the group
+Executions :
+    1. List of usecase executions with overall status
+    2. List of Suite executions with overall status
+    3. Detailed usecases and their overall status similar to usecase details.
+Import Usecases :
+    1. From Elastic store based on given time and details
+    2. From mongo DB, RDB
+    3. Option to create Suite out of the usecases
+    4. Choose endpoint for all the usecases imported and expected vs Bench & test
+    5. Option to create Suite out of imported usecases.
+
+Admin :
+    1. Setup data store
+    2. Edit data store -> Move Data from old to new Data Store
+    3. Create Groups and assign users to the group.
